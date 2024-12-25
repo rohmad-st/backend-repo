@@ -1,11 +1,24 @@
 import { Request, Response } from 'express';
-import { updateUser, fetchUser } from '../repository/userCollection';
+import {
+  updateUser,
+  fetchUser,
+  fetchUsers
+} from '../repository/userCollection';
 
 export const updateUserData = async (req: Request, res: Response) => {
   try {
     const { id, data } = req.body;
     await updateUser(id, data);
     res.status(200).send({ success: true });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+export const fetchUsersData = async (req: Request, res: Response) => {
+  try {
+    const users = await fetchUsers();
+    res.status(200).send(users);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

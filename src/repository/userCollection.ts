@@ -1,5 +1,5 @@
 import { firestore } from '../config/firebaseConfig';
-import { User } from '../entities/user';
+import { User, UserData } from '../entities/user';
 
 const USERS_COLLECTION = 'USERS';
 
@@ -8,6 +8,14 @@ export const updateUser = async (
   data: Partial<User>
 ): Promise<void> => {
   await firestore.collection(USERS_COLLECTION).doc(id).update(data);
+};
+
+export const fetchUsers = async (): Promise<UserData[]> => {
+  const usersSnapshot = await firestore.collection(USERS_COLLECTION).get();
+  return usersSnapshot.docs.map((doc) => ({
+    _id: doc.id,
+    ...doc.data()
+  })) as UserData[];
 };
 
 export const fetchUser = async (id: string): Promise<User | null> => {
